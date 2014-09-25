@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "browser-sync": "^0.9.1",
+    "coffee-script": "^1.7.1",
+    "del": "^0.1.1",
+    "gulp": "^3.8.7",
+    "gulp-cached": "^1.0.1",
+    "gulp-coffee": "^2.1.1",
+    "gulp-concat": "^2.3.4",
+    "gulp-load-plugins": "^0.5.0",
+    "gulp-notify": "^1.4.2",
+    "gulp-plumber": "^0.6.3",
+    "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.3.0",
+    "gulp-uglify": "^0.3.0",
+    "run-sequence": "^0.3.6",
+    "underscore": "^1.7.0"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "libs": [
+    {
+      "src": "underscore-min.js"
+    },
+    {
+      "src": "promise-1.0.0.min.js"
+    },
+    {
+      "src": "ecl.js"
+    }
+  ]
+}

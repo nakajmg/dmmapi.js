@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+    <title></title>
+  </head>
+<body>
+<div style="margin: 0 auto; text-align:center;">
+  <input type="text" id="keyword" value="コスプレ" autofocus style="width: 200px; height: 40px;">
+  <button id="fetch" style="width: 200px; line-height: 50px;font-size: 16px;">fetch</button>
+</div>
+<div id="content" style="font-size: 14px;">
+  <div v-repeat="items">
+    <a v-attr="href:URL" target="_blank">・{{title}}</a>
+    <!-- <img v-attr="src: imageURL.small"> -->
+  </div>
+</div>
+
+
+<script src="js/libs.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/main.js"></script>
+<script charset="utf-8">
+  
+document.addEventListener("DOMContentLoaded", function() {
+  
+  var content = new Vue({
+    el: "#content",
+    ready: function() {
+      this.dmm = new DMM({
+        apiId: 'hsdnAGPUbCRFUDQCM925',
+        affiliateId: 'jmglabo-990'
+      });
+    },
+    methods: {
+      fetch: function(params, button) {
+        var _this = this;
+        this.dmm.request(params).then(function(data) {
+          _this.items = data.items.item;
+          button.removeAttribute("disabled")
+        });
+      }
+    },
+    data: {}
+  });
+  
+  var keyword = document.querySelector("#keyword");
+  
+  document.querySelector("#fetch").addEventListener("click", function() {
+    this.setAttribute("disabled", false)
+    var word = keyword.value;
+    if(word == "") {
+      word = "コスプレ";
+    }
+    
+    content.fetch({
+      keyword: word
+    }, this);
+  });
+  
+})
+    
+  
+</script>
+</body>
+</html>
