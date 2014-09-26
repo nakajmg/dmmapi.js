@@ -3,4 +3,4 @@ dmmapi.js
 
 DMM Web API wrapper for JavaScript
 
-[http://nakajmg.github.io/dmmapi.js/dist/](nakajmg.github.io/dmmapi.js)
+[nakajmg.github.io/dmmapi.js](http://nakajmg.github.io/dmmapi.js/dist/)
