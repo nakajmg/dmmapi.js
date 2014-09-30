@@ -18,7 +18,7 @@
 <script src="js/vue.min.js"></script>
 <script src="js/dmmapi.js"></script>
 <script charset="utf-8">
-  
+
 document.addEventListener("DOMContentLoaded", function() {
   
   window.content = new Vue({
@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <a v-attr='href:URL' target='_blank'>{{title}}</a>
       </p>
     */}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1],
+    
     ready: function() {
       this.dmm = new DMM({
         apiId: 'hsdnAGPUbCRFUDQCM925',
@@ -39,10 +40,12 @@ document.addEventListener("DOMContentLoaded", function() {
         site: 'DMM.co.jp'
       });
     },
+    
     data: {
       keyword: "コスプレ",
       fetching: false
     },
+    
     methods: {
       copy: function(json) {
         if (!json) { return; }
@@ -62,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     }
   });
-})
+});
     
   
 </script>
