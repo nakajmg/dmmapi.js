@@ -1,7 +1,7 @@
 ###
 # @class DMM
 ###
-window.DMM = class DMM
+class DMM
   ###
   # DMM Web APIのエントリーポイント
   # @property _apiEntryPoint
@@ -53,8 +53,9 @@ window.DMM = class DMM
       # リクエストを受け取るコールバック
       DMM._jsonpCallback = (data) =>
         console.timeEnd("fetch")
-        @lastResult = new DMM.Results( data: data.value.items[0].result)
-        resolve(data.value.items[0].result)
+        @lastResult = new DMM.Items( data: @_clone(data.value.items[0].result))
+        resolve(@lastResult)
+        # resolve(data.value.items[0].result)
         # 挿入したscript要素とこの関数を破棄する
         DMM._jsonpCallback = null
         document.body.removeChild(_jsonpScript)
@@ -66,6 +67,29 @@ window.DMM = class DMM
       document.body.appendChild(_jsonpScript)
     )
   
+  ###
+  # 開発用ダミーリクエスト
+  # @method _request
+  # @private
+  # @return Promise
+  ###
+  _request: ->
+    return new Promise((resolve, reject) =>
+      xhr = new XMLHttpRequest()
+      xhr.open("GET", "/dummy.json", true)
+      xhr.onload = =>
+        data = JSON.parse(xhr.responseText)
+        @lastResult = new DMM.Items(
+          models: @_clone(data.value.items[0].result)
+          affId: @_affId
+        )
+        resolve(@lastResult)
+        # resolve(data.value.items[0].result)
+        
+      xhr.onerror = =>
+        console.error "error"
+      xhr.send()
+    )
   ###
   # paramsからリクエスト先のURLを作成する
   # @private
@@ -102,13 +126,11 @@ window.DMM = class DMM
   # @return {Strung}
   ###
   _paramsToQuery: (params) ->
-    Object.keys(params).map((param) ->
-      if param != "keyword"
-        "&#{param}=#{params[param]}"
+    _.map(params, (value, prop) ->
+      if prop isnt "keyword"
+        "&#{prop}=#{value}"
       else
-        # keywordだけはEUCJPでエンコードする必要がある
-        # require ecl.js
-        "&#{param}=#{EscapeEUCJP(params[param])}"
+        "&#{prop}=#{EscapeEUCJP(value)}"
     ).join('')
 
   ###
@@ -119,29 +141,46 @@ window.DMM = class DMM
   ###
   _getTimeStamp: ->
     # ゼロパディング関数
-    pad = (num) ->
+    __pad = (num) ->
       ("0"+num).slice(-2)
     
     date = new Date();
     yyyy = date.getFullYear()
-    MM = pad(date.getMonth() + 1)
-    dd = pad(date.getDate())
-    HH = pad(date.getHours())
-    mm = pad(date.getMinutes())
-    ss = pad(date.getSeconds())
+    MM = __pad(date.getMonth() + 1)
+    dd = __pad(date.getDate())
+    HH = __pad(date.getHours())
+    mm = __pad(date.getMinutes())
+    ss = __pad(date.getSeconds())
     "#{yyyy}-#{MM}-#{dd}+#{HH}:#{mm}:#{ss}"
-    
-
-
-window.DMM.Results = class DMM.Results
-  constructor: (opt) ->
-    @items = opt.data
-
-  createPagination: ->
-    console.log @result
   
-  getPackages: ->
-    
+  ###
+  # オブジェクトのディープコピーを返す
+  # @method
+  # @private
+  # @param {Object} json
+  # @return {Object}
+  ###
+  _clone: (json) ->
+    return unless json
+    JSON.parse(JSON.stringify(json))
   
-    
-    
+  
+  ###
+  # サンプルが画像がないときのリダイレクト先の画像をキャッシュしておく
+  # @value redirectImage
+  ###
+  @redirectImage: do ->
+    redirectImage = new Image()
+    redirectImage.src = "http://pics.dmm.com/mono/movie/n/now_printing/now_printing.jpg"
+  
+###
+# export
+###
+if typeof define == "function"
+  define(() -> 
+    return DMM
+  )
+else if typeof module == "object"
+  module.exports = DMM
+else
+  window.DMM = DMM
