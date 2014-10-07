@@ -11,12 +11,12 @@ DMM.Items = class DMM.Items extends ns.EveEve
   # @method _initialize
   # @private
   # @param {Object} opt
-  # @param {Object} opt.models 検索結果の帯ジェクト
+  # @param {Object} opt.data 検索結果の帯ジェクト
   # @param {String} opt.affId サンプル動画のURL作成に必要
   ###
   _initialize: (opt) ->
     @_affId = opt.affId
-    @_generateItemCollection(opt.models.items.item)
+    @_generateItemCollection(opt.data.items.item)
     @_eventify()
   
   _eventify: ->

@@ -80,7 +80,7 @@ class DMM
       xhr.onload = =>
         data = JSON.parse(xhr.responseText)
         @lastResult = new DMM.Items(
-          models: @_clone(data.value.items[0].result)
+          data: @_clone(data.value.items[0].result)
           affId: @_affId
         )
         resolve(@lastResult)

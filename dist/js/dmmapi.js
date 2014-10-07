@@ -184,7 +184,7 @@
             var data;
             data = JSON.parse(xhr.responseText);
             _this.lastResult = new DMM.Items({
-              models: _this._clone(data.value.items[0].result),
+              data: _this._clone(data.value.items[0].result),
               affId: _this._affId
             });
             return resolve(_this.lastResult);
@@ -619,13 +619,13 @@
      * @method _initialize
      * @private
      * @param {Object} opt
-     * @param {Object} opt.models 検索結果の帯ジェクト
+     * @param {Object} opt.data 検索結果の帯ジェクト
      * @param {String} opt.affId サンプル動画のURL作成に必要
      */
 
     Items.prototype._initialize = function(opt) {
       this._affId = opt.affId;
-      this._generateItemCollection(opt.models.items.item);
+      this._generateItemCollection(opt.data.items.item);
       return this._eventify();
     };
 
