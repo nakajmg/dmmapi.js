@@ -417,6 +417,9 @@
 
     Item.prototype._generateLargeSampleImageURL = function() {
       var largeSampleImages, regexp, smallSampleImages;
+      if (!this.data.sampleImageURL) {
+        return;
+      }
       regexp = /-[0-9]+\.[a-z]+$/;
       smallSampleImages = this.data.sampleImageURL.sample_s.image;
       largeSampleImages = _.map(smallSampleImages, function(thumb) {
