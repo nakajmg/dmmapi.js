@@ -5,35 +5,70 @@
     <title>dmmapi.js</title>
     <style>
       #content { margin: 0 auto; text-align: center; }
-      #content input { width: 200px; height: 40px; }
+      #content input[type=text] { width: 200px; height: 40px; }
       #content button { width: 200px; line-height: 35px;font-size: 16px; }
       #content p { text-align: left; margin: 3px 0; }
+      img { width: 70px; }
+      img {-webkit-filter: blur(5px); }
+      input[type="checkbox"] {
+        display: none;
+      }
+      input:checked + button {
+        pointer-events: none;
+        opacity: 0.4;
+      }
+      .result {
+        text-align: left;
+      }
     </style>
   </head>
 <body>
-<div id="content" style="font-size: 14px;"></div>
-
+<h1>dmmapi.js</h1>
+<div id="content" style="font-size: 12px;"></div>
 
 <script src="js/libs.js"></script>
-<script src="js/vue.min.js"></script>
+<!-- <script src="js/lib/ecl.js"></script>
+<script src="js/lib/promise-1.0.0.min.js"></script>
+<script src="js/lib/underscore-min.js"></script> -->
+<script src="js/lib/velocity.min.js"></script>
+
 <script src="js/dmmapi.js"></script>
+<script src="js/lib/vuerc.js"></script>
 <script charset="utf-8">
 
 document.addEventListener("DOMContentLoaded", function() {
+  Vue.config.proto = false;
+  Vue.transition('my-fade', {
+    beforeEnter: function (el) {
+      el.style.opacity = 0;
+    },
+    enter: function(el, done) {
+      Velocity(el, {opacity: 1}, 1000, done());
+    },
+    leave: function(el, done) {
+      Velocity(el, {opacity: 0}, 1000, done());
+    }
+  });
   
   window.content = new Vue({
     el: "#content",
     template: (function () {/*
       <div>
         <input type='text' v-model='keyword' autofocus>
-        <button v-on='click: fetch' v-attr='disabled: fetching'>fetch</button>
+        <input type='checkbox' v-model='fetching'>
+        <button v-on='click: fetch'>fetch</button>
+        <label>com<input type="radio" name="zone" value="com" v-model="zone"></label>
+        <label>jp<input type="radio" name="zone" value="jp" v-model="zone"></label>
       </div>
-      <p v-repeat='items'>
-        <a v-attr='href:URL' target='_blank'>{{title}}</a>
-      </p>
+      <div class='result' v-repeat='items' v-transition='my-face'>
+        <a v-attr='href: data.affiliateURL'>{{data.title}}</a>
+      </div>
+      <div v-if='items'>See console.</div>
+      
+
     */}).toString().match(/[^]*\/\*([^]*)\*\/\}$/)[1],
     
-    ready: function() {
+    compiled: function() {
       this.dmm = new DMM({
         apiId: 'hsdnAGPUbCRFUDQCM925',
         affiliateId: 'jmglabo-990',
@@ -41,9 +76,13 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     },
     
-    data: {
-      keyword: "コスプレ",
-      fetching: false
+    data: function() {
+      return {
+        keyword: "アイドル",
+        fetching: false,
+        items: null,
+        zone: "com"
+      }
     },
     
     methods: {
@@ -54,17 +93,27 @@ document.addEventListener("DOMContentLoaded", function() {
       fetch: function() {
         var _this = this;
         var params = {};
+        params.keyword = this.keyword;
+        params.hits = 5;
+        params.site = this.zone === "com" ? "DMM.com" : "DMM.co.jp";
         this.fetching = true;
         this.prevResult = this.copy(this.lastResult);
-        params.keyword = this.keyword;
-        this.dmm.request(params).then(function(data) {
-          _this.lastResult = data;
+        
+        this.dmm.request(params).then(function(items) {
+          
           _this.fetching = false;
-          _this.items = data.items.item;
+          _this.items = items.data;
+          _this.$log()
+          // items.setAvailableSampleImageURL();
+          // items.on("complete:setAvailableSampleImageURL", function() {
+            // _this.items = items.data;
+          // });
         });
       }
     }
   });
+  
+  
 });
     
   

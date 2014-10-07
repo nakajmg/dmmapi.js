@@ -26,7 +26,16 @@ libOrder = ->
     return "src/lib/#{lib.src}"
 
 
-src.lib = libOrder()
+order = {}
+order.lib = libOrder()
+order.coffee = [
+  "src/coffee/eveeve.coffee"
+  "src/coffee/dmmapi.coffee"
+  "src/coffee/dmmapi.item.coffee"
+  # "src/coffee/dmmapi.item2.coffee"
+  "src/coffee/dmmapi.items.coffee"
+]
+
 
 # handler function
 plumberWithNotify = ->
@@ -40,10 +49,17 @@ gulp.task "coffee", ->
     .pipe plumberWithNotify()
     .pipe $.coffee({bare: true})
     .pipe gulp.dest(dest.js)
-    
+
+gulp.task "coffeeall", ->
+  gulp.src(order.coffee)
+    .pipe plumberWithNotify()
+    .pipe $.concat("dmmapi.coffee")
+    # .pipe $.coffee({bare: true})
+    .pipe $.coffee()
+    .pipe gulp.dest(dest.js)
 
 gulp.task "lib", ->
-  gulp.src(src.lib)
+  gulp.src(order.lib)
     .pipe $.concat("libs.js")
     .pipe gulp.dest(dest.lib)
     # .pipe $.uglify()
@@ -58,5 +74,6 @@ gulp.task "default", ->
       baseDir: [baseDir]
     notify: false
     host: "localhost"
-  gulp.watch ["src/coffee/**/*.coffee"], ["coffee", reload]
+  # gulp.watch ["src/coffee/**/*.coffee"], ["coffee", reload]
+  gulp.watch ["src/coffee/**/*.coffee"], ["coffeeall", reload]
   gulp.watch ["dist/*.html"], reload
