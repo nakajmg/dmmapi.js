@@ -67,6 +67,7 @@ DMM.Item = class DMM.Item extends ns.EveEve
   # @private
   ###
   _generateLargeSampleImageURL: ->
+    return unless @data.sampleImageURL
     regexp = /-[0-9]+\.[a-z]+$/
     smallSampleImages = @data.sampleImageURL.sample_s.image
     largeSampleImages = _.map(smallSampleImages, (thumb) ->
@@ -220,7 +221,7 @@ DMM.Item = class DMM.Item extends ns.EveEve
   }
 }
 ###
-# http://cc3001.dmm.co.jp/litevideo/freepv/:initial/:third/:round_content_id/:round_content_id+_sm_w.mp4
+# ToDo: スマホ用のサンプル動画のURLを解析する http://cc3001.dmm.co.jp/litevideo/freepv/:initial/:third/:round_content_id/:round_content_id+_sm_w.mp4
 # :initial content_idの頭1文字
 # :third content_idの頭から3文字
 # :round_content_id 9文字以下ならそのまま。9文字以上なら後半の数字の0をけずる
